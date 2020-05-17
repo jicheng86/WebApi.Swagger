@@ -1,0 +1,100 @@
+{
+  "Serilog": {
+    "Using": [ "Serilog.Sinks.MSSqlServer" ],
+    "WriteTo": [
+      {
+        "Name": "Console",
+        "Args": {
+          "theme": "Serilog.Sinks.SystemConsole.Themes.AnsiConsoleTheme::Code, Serilog.Sinks.Console",
+          "outputTemplate": "发生时间:{Timestamp: HH:mm:ss.fff} 事件等级:{Level} 详细信息:{Message}{NewLine}{Exception}"
+        }
+      },
+      {
+        "Name": "File",
+        "Args": {
+          "path": "/SeriLogs/log.txt",
+          "rollingInterval": "Day",
+          "outputTemplate": "发生时间:{Timestamp: HH:mm:ss.fff} 事件等级:{Level} 详细信息:{Message}{NewLine}{Exception}"
+        }
+      },
+      {
+        "Name": "MSSqlServer",
+        "Args": {
+          "connectionString": "NamedConnectionString",
+          "MinimumLevel": "Warning",
+          "sinkOptionsSection": {
+            "tableName": "Logs",
+            "schemaName": "EventLogging",
+            "autoCreateSqlTable": true,
+            "batchPostingLimit": 1000,
+            "period": "0.00:00:30"
+          },
+          "restrictedToMinimumLevel": "Warning",
+          "columnOptionsSection": {
+            "disableTriggers": true,
+            "clusteredColumnstoreIndex": false,
+            "primaryKeyColumnName": "Id",
+            "addStandardColumns": [ "LogEvent" ],
+            "removeStandardColumns": [ "MessageTemplate", "Properties" ],
+            "additionalColumns": [
+              {
+                "ColumnName": "EventType",
+                "DataType": "int",
+                "AllowNull": false
+              },
+              {
+                "ColumnName": "Release",
+                "DataType": "varchar",
+                "DataLength": 32
+              },
+              {
+                "ColumnName": "EnvironmentUserName",
+                "PropertyName": "UserName",
+                "DataType": "varchar",
+                "DataLength": 50
+              },
+              {
+                "ColumnName": "All_SqlColumn_Defaults",
+                "DataType": "varchar",
+                "AllowNull": true,
+                "DataLength": -1,
+                "NonClusteredIndex": false
+              }
+            ],
+            "id": { "nonClusteredIndex": true },
+            "level": {
+              "columnName": "Severity",
+              "storeAsEnum": false
+            },
+            "properties": {
+              "columnName": "Properties",
+              "excludeAdditionalProperties": true,
+              "dictionaryElementName": "dict",
+              "itemElementName": "item",
+              "omitDictionaryContainerElement": false,
+              "omitSequenceContainerElement": false,
+              "omitStructureContainerElement": false,
+              "omitElementIfEmpty": true,
+              "propertyElementName": "prop",
+              "rootElementName": "root",
+              "sequenceElementName": "seq",
+              "structureElementName": "struct",
+              "usePropertyKeyAsElementName": false
+            },
+            "timeStamp": {
+              "columnName": "Timestamp",
+              "convertToUtc": true
+            },
+            "logEvent": {
+              "excludeAdditionalProperties": true,
+              "excludeStandardColumns": true
+            },
+            "message": { "columnName": "Msg" },
+            "exception": { "columnName": "Ex" },
+            "messageTemplate": { "columnName": "Template" }
+          }
+        }
+      }
+    ]
+  }
+}

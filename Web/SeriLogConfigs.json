@@ -1,0 +1,13 @@
+{
+  "Serilog": {
+    "WriteTo": [
+      {
+        "Name": "Console",
+        "Args": {
+          "theme": "Serilog.Sinks.SystemConsole.Themes.AnsiConsoleTheme::Code, Serilog.Sinks.Console",
+          "outputTemplate": "发生时间:{Timestamp: HH:mm:ss.fff} 事件等级:{Level} 详细信息:{Message}{NewLine}{Exception}"
+        }
+      }
+    ]
+  }
+}
